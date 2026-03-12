@@ -2,11 +2,25 @@ services:
   postgres:
     image: 'postgres:latest'
     environment:
-      - 'POSTGRES_DB=mydatabase'
-      - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+      - 'POSTGRES_DB=MoneyDB'
+      - 'POSTGRES_PASSWORD=password'
+      - 'POSTGRES_USER=username'
     ports:
-      - '5432'
+      - '5432:5432'
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U username -d Notes" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  dbgate:
+    image: dbgate/dbgate:latest
+    container_name: dbGate
+    ports:
+      - "3000:3000"
+    networks:
+      - shared_network
+
 volumes:
   postgres_data:
 
